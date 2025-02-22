@@ -42,28 +42,21 @@ for i, post_item in enumerate(post_items[:2]):
     tags = [tag.text for tag in tags_list]
     print(f"    Tags: {tags}")
 
-    # Extract author names -> str
+    # Extract author names
     authors = post_soup.find("span", class_="PostsAuthors-authorName")
-    authors_links = post_soup.find_all("a", class_="UsersNameDisplay-noColor").get("href")
-    print(authors_links)
-    for e in authors:
-        print(e)
-    author_names = [author.text for author in authors if author != 1]
-
-    #author_links = [author for author in authors]
-    author_links = []
-    for author in authors:
-        link = author.find("a", class_="UsersNameDisplay-noColor")
-        author_links.append(link)
-
-    #print(f"    Author Names: {author_names}")
-    print(f"    Author links: {author_links}")
-
-
-    # author link
-
-    # upvotes/karma
     
+    author_names = [author.text for author in authors if author != ", "]
+
+    # Extract author links
+    authors_links = [author_res['href'] for author_res in authors.find_all("a", class_="UsersNameDisplay-noColor")]
+
+    # Extract upvotes/karma
+    karma = post_soup.find("h1", class_="Typography-root Typography-headline LWPostsPageTopHeaderVote-voteScore")
+    
+    print(f"    Author Names: {author_names}")
+    print(f"    Author links: {authors_links}")
+    print(f"    Post Karma: {karma.text}")
+
     time.sleep(1)
 
 print(f"Successfully scraped {len(posts_data)} posts")
