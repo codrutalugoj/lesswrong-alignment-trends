@@ -39,7 +39,7 @@ def scrape_lw(num=10):
             continue
         
         post_url = f"{base_url}{post_link['href']}"
-        print(f"Scraping post {i+1}/20: {post_url}")
+        print(f"Scraping post {i+1}/{num}: {post_url}")
         
         # Get individual post content
         post_page = requests.get(post_url, headers=headers)
@@ -48,7 +48,7 @@ def scrape_lw(num=10):
         # Extract post title
         title_raw = post_soup.find("h1", class_="PostsPageTitle-root")
         title = title_raw.find("a").text if title_raw else "None"
-        print(f"    Post title: {title_raw}")
+        print(f"    Post title: {title}")
 
         # Extract tags
         tags_root = post_soup.find("span", class_="FooterTagList-root")
@@ -67,13 +67,17 @@ def scrape_lw(num=10):
         # Extract upvotes/karma
         karma = post_soup.find("h1", class_="Typography-root Typography-headline LWPostsPageTopHeaderVote-voteScore")
         karma = karma.text if karma else "None"
+
+        # Extract post date
+        post_date = post_soup.find("span", class_="PostsPageDate-date").text
         
         post_dict = {"title": title,
                      "url": post_url,
                      "author_names": author_names,
                      "author_links": author_links,
                      "tags": tags,
-                     "post_karma": karma}
+                     "post_karma": karma,
+                     "date": post_date}
         
         posts_data["posts"].append(post_dict)
         time.sleep(2)
@@ -81,4 +85,4 @@ def scrape_lw(num=10):
     save_to_json(posts_data, filename="raw_data.json")
 
 if __name__ == "__main__":
-    scrape_lw(num=5)
+    scrape_lw(num=25)
