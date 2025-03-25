@@ -6,15 +6,14 @@ import pandas as pd
 import json
 
 def save_to_json(data: dict, filename: str):
-    timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-    filename = f"lesswrong_posts_{timestamp}.json"
+    filename = "lesswrong_data.json"
     
     # Save to JSON file
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
     print(f"Saved {len(data['posts'])} posts to {filename}")
-    return filename
+
 
 def scrape_lw(num=10):
     base_url = "https://www.lesswrong.com"
