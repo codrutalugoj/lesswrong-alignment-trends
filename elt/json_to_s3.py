@@ -11,5 +11,3 @@ def upload_json(json_filename: str):
         Bucket='lw-trends',
         Key=json_filename
     )
-
-

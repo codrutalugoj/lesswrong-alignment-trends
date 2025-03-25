@@ -16,7 +16,7 @@ services:
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
     command: >
       bash -c "airflow db init && 
-               airflow users create --username airflow --password password --firstname John --lastname Doe --role Admin --email admin@example.com && export AIRFLOW_HOME=$(pwd)"
+               airflow users create --username airflow --password password --firstname John --lastname Doe --role Admin --email admin@example.com"
 
   webserver:
     build:
@@ -42,7 +42,8 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - /dags
+      - ./dags:/opt/airflow/dags
+      - ./elt:/opt/airflow/elt
 
   scheduler:
     build:
@@ -66,7 +67,8 @@ services:
       - AIRFLOW__WEBSERVER__SECRET_KEY=secret
     command: scheduler
     volumes:
-      - /dags
+      - ./dags:/opt/airflow/dags
+      - ./elt:/opt/airflow/elt
 
 volumes:
   postgres-db-volume:

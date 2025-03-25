@@ -2,8 +2,7 @@ from datetime import timedelta, datetime
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
-from scraper import scrape_lw
-from json_to_s3 import upload_json
+import subprocess
 
 default_args = {
     'owner': 'airflow',
@@ -20,7 +19,7 @@ dag = DAG(
     'LessWrong-Trends', 
     default_args=default_args,
     description="LessWrong ETL",
-    schedule=timedelta(days=0),  # Adjust the schedule interval as needed
+    schedule=timedelta(days=1),  # Adjust the schedule interval as needed
 )
 
 # ETL workflow
@@ -30,9 +29,17 @@ dag = DAG(
 # 3. 
 
 # 1: Extract/Scrape data
+def run_scraper():
+    path = "/opt/airflow/elt/scraper.py" 
+    result = subprocess.run(["python", path], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(f"Scraping failed with error: {result.stderr}")
+    else:
+        print(result.stdout)
+
 extract_task = PythonOperator(
     task_id='extract_data',
-    python_callable=scrape_lw,
+    python_callable=run_scraper,
     dag=dag,
 )
 
@@ -44,9 +51,17 @@ extract_task = PythonOperator(
 # )
 
 # Task 3: Load data
+def run_json_to_s3():
+    path = "/opt/airflow/elt/json_to_s3.py" 
+    result = subprocess.run(["python", path], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(f"Uploading JSON to S3 failed with error: {result.stderr}")
+    else:
+        print(result.stdout)
+
 load_task = PythonOperator(
     task_id='load_data',
-    python_callable=upload_json,
+    python_callable=run_json_to_s3,
     dag=dag,
 )
 
