@@ -17,10 +17,10 @@ TODO: We load the transformed data into a data warehouse/lake
 
 
 ## TODOs:
-1. visualizations:
+1. Fix credentials for uploading to S3 bucket
+
+2. visualizations:
     - topic clusters with size of points based on karma
-2. create ELT DAG for automated ELT pipeline using Airflow
-    - check DAG in webserver
 - add IAM profile or secrets management
 - Add Apache Kafka for streaming data
 - Data Diagram/Workflow
