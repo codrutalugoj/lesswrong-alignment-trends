@@ -1,3 +1,5 @@
 beautifulsoup4
 requests
 pandas
+apache-airflow
+boto3
