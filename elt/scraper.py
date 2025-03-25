@@ -4,15 +4,17 @@ import time
 import datetime
 import pandas as pd
 import json
+import os
 
 def save_to_json(data: dict, filename: str):
-    filename = "lesswrong_data.json"
+    filename = os.path.join(os.getcwd(), "lesswrong_data.json")
     
     # Save to JSON file
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
     
     print(f"Saved {len(data['posts'])} posts to {filename}")
+    print(f"{os.path.abspath(filename)}")
 
 
 def scrape_lw(num=10):
@@ -84,4 +86,4 @@ def scrape_lw(num=10):
     save_to_json(posts_data, filename="raw_data.json")
 
 if __name__ == "__main__":
-    scrape_lw(num=25)
+    scrape_lw(num=2)
