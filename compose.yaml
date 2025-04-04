@@ -44,6 +44,8 @@ services:
     volumes:
       - ./dags:/opt/airflow/dags
       - ./elt:/opt/airflow/elt
+      - ~/.aws/credentials:/root/.aws/credentials:ro
+      - ~/.aws/config:/root/.aws/config:ro
 
   scheduler:
     build:
@@ -56,6 +58,9 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
+      - AWS_PROFILE=lesswrong
+      - AWS_SHARED_CREDENTIALS_FILE=/root/.aws/credentials
+      - AWS_CONFIG_FILE=/root/.aws/config
       - LOAD_EX=n
       - EXECUTOR=Local
       - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -69,6 +74,8 @@ services:
     volumes:
       - ./dags:/opt/airflow/dags
       - ./elt:/opt/airflow/elt
+      - ~/.aws/credentials:/root/.aws/credentials:ro
+      - ~/.aws/config:/root/.aws/config:ro
 
 volumes:
   postgres-db-volume:
