@@ -3,3 +3,5 @@ requests
 pandas
 apache-airflow
 boto3
+dbt-core
+dbt-postgres
