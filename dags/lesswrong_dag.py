@@ -3,6 +3,9 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.operators.bash import BashOperator
 import subprocess
+import logging
+
+logger = logging.getLogger(__name__)
 
 default_args = {
     'owner': 'airflow',
@@ -43,14 +46,7 @@ extract_task = PythonOperator(
     dag=dag,
 )
 
-# # 2: Transform
-# transform_task = PythonOperator(
-#     task_id='transform_data',
-#     python_callable=scrape_lw,
-#     dag=dag,
-# )
-
-# Task 3: Load data
+# Task 2: Load data to AWS S3
 def run_json_to_s3():
     path = "/opt/airflow/elt/json_to_s3.py" 
     result = subprocess.run(["python", path], capture_output=True, text=True)
@@ -58,6 +54,7 @@ def run_json_to_s3():
         raise Exception(f"Uploading JSON to S3 failed with error: {result.stderr}")
     else:
         print(result.stdout)
+    
 
 load_task = PythonOperator(
     task_id='load_data',
@@ -65,4 +62,27 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-extract_task >> load_task 
+def run_s3_to_database():
+    path = "/opt/airflow/elt/s3_to_database.py" 
+    result = subprocess.run(["python", path], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise Exception(f"Loading data from S3 failed: {result.stderr}")
+    else:
+        logger.info(result)
+        print(result.stdout)
+    
+# Task 3: Load from AWS S3
+load_from_s3 = PythonOperator(
+    task_id='load_from_s3',
+    python_callable=run_s3_to_database,
+    dag=dag,
+)
+
+# Task 4: Transform
+# transform_task = BashOperator(
+#     task_id='dbt_transform',
+#     bash_command="dbt run --project-dir /app/dbt --profiles-dir /root/.dbt --full-refresh",
+#     dag=dag,
+# )
+
+extract_task >> load_task >> load_from_s3
