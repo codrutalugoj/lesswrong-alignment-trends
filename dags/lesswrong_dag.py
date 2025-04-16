@@ -68,7 +68,6 @@ def run_s3_to_database():
     if result.returncode != 0:
         raise Exception(f"Loading data from S3 failed: {result.stderr}")
     else:
-        logger.info(result)
         print(result.stdout)
     
 # Task 3: Load from AWS S3
