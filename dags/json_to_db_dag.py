@@ -19,7 +19,7 @@ default_args = {
 }
 
 dag = DAG(
-    'JSON to Database', 
+    'JSON_to_DB', 
     default_args=default_args,
     description="Pulls the latest JSON data from S3 and writes it to a Postgres database",
     schedule=timedelta(days=1),  # Adjust the schedule interval as needed
