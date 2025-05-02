@@ -62,20 +62,6 @@ load_task = PythonOperator(
     dag=dag,
 )
 
-def run_s3_to_database():
-    path = "/opt/airflow/elt/s3_to_database.py" 
-    result = subprocess.run(["python", path], capture_output=True, text=True)
-    if result.returncode != 0:
-        raise Exception(f"Loading data from S3 failed: {result.stderr}")
-    else:
-        print(result.stdout)
-    
-# Task 3: Load from AWS S3
-load_from_s3 = PythonOperator(
-    task_id='load_from_s3',
-    python_callable=run_s3_to_database,
-    dag=dag,
-)
 
 # Task 4: Transform
 # transform_task = BashOperator(
@@ -84,4 +70,4 @@ load_from_s3 = PythonOperator(
 #     dag=dag,
 # )
 
-extract_task >> load_task >> load_from_s3
+extract_task >> load_task
