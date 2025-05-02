@@ -3,6 +3,7 @@ services:
     image: postgres:13
     ports:
       - "5432:5432"
+    restart: always
     environment:
       - POSTGRES_USER=airflow
       - POSTGRES_PASSWORD=airflow
@@ -14,6 +15,7 @@ services:
     image: postgres:latest
     ports:
       - "5434:5432"
+    restart: always
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=pwd
