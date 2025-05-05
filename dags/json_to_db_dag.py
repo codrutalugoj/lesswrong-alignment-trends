@@ -40,4 +40,11 @@ load_from_s3 = PythonOperator(
     dag=dag,
 )
 
-load_from_s3
+# Task 4: Transform the table with dbt
+dbt = BashOperator(
+    task_id='dbt_transformation',
+    bash_command="cd ./lesswrong && dbt run",
+    dag=dag,
+)
+
+load_from_s3 >> dbt
