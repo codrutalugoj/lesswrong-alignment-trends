@@ -62,6 +62,8 @@ services:
       - ./elt:/opt/airflow/elt
       - ~/.aws/credentials:/root/.aws/credentials:ro
       - ~/.aws/config:/root/.aws/config:ro
+      - ./lesswrong:/opt/dbt
+      - ~/.dbt:/root/.dbt
 
   scheduler:
     build:
@@ -93,6 +95,8 @@ services:
       - ./elt:/opt/airflow/elt
       - ~/.aws/credentials:/root/.aws/credentials:ro
       - ~/.aws/config:/root/.aws/config:ro
+      - ./lesswrong:/dbt
+      - ~/.dbt:/root/.dbt
 
 volumes:
   postgres-airflow-volume:
