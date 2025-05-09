@@ -10,6 +10,8 @@ services:
       - POSTGRES_DB=airflow
     volumes:
       - postgres-airflow-volume:/var/lib/postgresql/data
+    networks:
+      - net
 
   destination_postgres:
     image: postgres:latest
@@ -22,6 +24,8 @@ services:
       - POSTGRES_DB=destination_db
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - net
 
   init-airflow:
     image: apache/airflow:latest
@@ -32,6 +36,31 @@ services:
     command: >
       bash -c "airflow db init && 
                airflow users create --username airflow --password pwd --firstname John --lastname Doe --role Admin --email admin@example.com"
+    networks:
+      - net
+
+  dbt:
+    image: ghcr.io/dbt-labs/dbt-postgres:latest
+    # command:
+    #   [
+    #     "run",
+    #     "--profiles-dir",
+    #     "/root",
+    #     "--project-dir",
+    #     "/lesswrong",
+    #     "--full-refresh"
+    #   ]
+    networks:
+      - net
+    volumes:
+      - ./lesswrong:/lesswrong
+      - ~/.dbt:/root
+    depends_on:
+      - destination_postgres
+      - init-airflow
+    environment:
+      DBT_PROFILE: lesswrong
+      DBT_TARGET: dev
 
   webserver:
     build:
@@ -62,8 +91,10 @@ services:
       - ./elt:/opt/airflow/elt
       - ~/.aws/credentials:/root/.aws/credentials:ro
       - ~/.aws/config:/root/.aws/config:ro
-      - ./lesswrong:/opt/dbt
+      - ./lesswrong:/opt/lesswrong
       - ~/.dbt:/root/.dbt
+    networks:
+      - net
 
   scheduler:
     build:
@@ -95,8 +126,14 @@ services:
       - ./elt:/opt/airflow/elt
       - ~/.aws/credentials:/root/.aws/credentials:ro
       - ~/.aws/config:/root/.aws/config:ro
-      - ./lesswrong:/dbt
+      - ./lesswrong:/lesswrong
       - ~/.dbt:/root/.dbt
+    networks:
+      - net
+
+networks:
+  net:
+    driver: bridge
 
 volumes:
   postgres-airflow-volume:
