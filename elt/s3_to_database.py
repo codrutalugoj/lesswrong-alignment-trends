@@ -40,7 +40,8 @@ def json_to_database(bucket, filename):
         table_name = table_name.split('.')[0]
     
     # Clean table name for SQL (remove special characters)
-    table_name = ''.join(char for char in table_name if char.isalnum() or char == '_')
+    #table_name = ''.join(char for char in table_name if char.isalnum() or char == '_')
+    table_name = "lesswrong_data"
     
     # Load the JSON data
     with open(local_filename, 'r') as file:
