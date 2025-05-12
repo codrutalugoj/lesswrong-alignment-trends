@@ -71,8 +71,6 @@ services:
       - init-airflow
       - postgres
       - destination_postgres
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
@@ -105,8 +103,6 @@ services:
       - init-airflow
       - postgres
       - destination_postgres
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       - AWS_PROFILE=lesswrong
       - AWS_SHARED_CREDENTIALS_FILE=/root/.aws/credentials
