@@ -1,12 +1,11 @@
-with results as (
-    select 
-    post.title, 
-    post.author_names, 
-    post.tags as tags, 
+WITH results AS (
+  SELECT
+    post.title as title,
+    post.author_names as author_names,
+    post.date as date,
+    post.tags as tags,
     post.post_karma as karma
-from trends 
-LATERAL VIEW EXPLODE(posts) as post
-WHERE NOT array_contains(post.tags, "Site Meta") 
+  FROM lesswrong_data as post
+  WHERE NOT 'Site Meta' = post.tags
 )
-select * into NewTable
-from results;
+SELECT * INTO lesswrong_transformed FROM results
