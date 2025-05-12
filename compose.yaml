@@ -39,28 +39,28 @@ services:
     networks:
       - net
 
-  dbt:
-    image: ghcr.io/dbt-labs/dbt-postgres:latest
-    # command:
-    #   [
-    #     "run",
-    #     "--profiles-dir",
-    #     "/root",
-    #     "--project-dir",
-    #     "/lesswrong",
-    #     "--full-refresh"
-    #   ]
-    networks:
-      - net
-    volumes:
-      - ./lesswrong:/lesswrong
-      - ~/.dbt:/root
-    depends_on:
-      - destination_postgres
-      - init-airflow
-    environment:
-      DBT_PROFILE: lesswrong
-      DBT_TARGET: dev
+  # dbt:
+  #   image: ghcr.io/dbt-labs/dbt-postgres:latest
+  #   # command:
+  #   #   [
+  #   #     "run",
+  #   #     "--profiles-dir",
+  #   #     "/root",
+  #   #     "--project-dir",
+  #   #     "/lesswrong",
+  #   #     "--full-refresh"
+  #   #   ]
+  #   networks:
+  #     - net
+  #   volumes:
+  #     - ./lesswrong:/lesswrong
+  #     - ~/.dbt:/root
+  #   depends_on:
+  #     - destination_postgres
+  #     - init-airflow
+  #   environment:
+  #     DBT_PROFILE: lesswrong
+  #     DBT_TARGET: dev
 
   webserver:
     build:
@@ -91,8 +91,8 @@ services:
       - ./elt:/opt/airflow/elt
       - ~/.aws/credentials:/root/.aws/credentials:ro
       - ~/.aws/config:/root/.aws/config:ro
-      - ./lesswrong:/opt/lesswrong
-      - ~/.dbt:/root/.dbt
+      - ./lesswrong:/opt/airflow/lesswrong
+      - ~/.dbt:/.dbt
     networks:
       - net
 
