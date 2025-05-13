@@ -33,4 +33,5 @@ models:
   lesswrong:
     # Config indicated by + and applies to all files under models/example/
     example:
-      +materialized: table
+      transform:
+        +materialized: table
