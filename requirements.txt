@@ -3,6 +3,7 @@ selenium
 webdriver-manager
 requests
 pandas
+bertopic
 apache-airflow
 boto3
 dbt-core
