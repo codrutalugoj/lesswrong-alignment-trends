@@ -37,6 +37,34 @@ def get_dynamic_content(url):
     finally:
         driver.quit()
 
+def extract_text_content(element):
+    text_body = []
+    
+    # Base case - if element is just text
+    if isinstance(element, str):
+        return element.strip()
+    
+    # Recursively process all children
+    for child in element.children:
+        # Skip empty strings and images
+        if isinstance(child, str) and not child.strip():
+            continue
+        if child.name == 'figure':
+            continue
+            
+        # Handle paragraphs and headers
+        if child.name and (child.name == 'p' or "h" in child.name):
+            text = child.get_text()
+            if text:
+                text_body.append(text)
+        # Recursive call for nested elements
+        else:
+            text = extract_text_content(child)
+            if text:
+                text_body.append(text)
+                
+    return '\n'.join(filter(None, text_body))
+
 def scrape_lw(num_posts=10):
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
     
@@ -96,6 +124,10 @@ def scrape_lw(num_posts=10):
 
         # Extract post date
         post_date = post_soup.find("span", class_="PostsPageDate-date").text
+
+        # Extract post text
+        post_wrapper = post_soup.find("div", class_="InlineReactSelectionWrapper-root")
+        post_text = extract_text_content(post_wrapper)
         
         post_dict = {"title": title,
                      "url": post_url,
@@ -103,7 +135,8 @@ def scrape_lw(num_posts=10):
                      "author_links": author_links,
                      "tags": tags,
                      "post_karma": karma,
-                     "date": post_date}
+                     "date": post_date,
+                     "text": post_text}
         
         posts_data["posts"].append(post_dict)
         time.sleep(2)
@@ -111,4 +144,4 @@ def scrape_lw(num_posts=10):
     save_to_json(posts_data, filename="raw_data.json")
 
 if __name__ == "__main__":
-    scrape_lw(num_posts=20)
+    scrape_lw(num_posts=2)
