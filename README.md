@@ -17,19 +17,22 @@ Initially the modeling will be simple: we'll only use the existing tags from the
 We do some processing on the tags using a dbt layer:
 - eliminate the posts with the "meta" tag (those are meta posts on LessWrong we're not interested in).
 
+## Modeling
+MVP: Topic Clustering using BERTopic
+There are pretrained models that I should test first and then finetune on LW data depending on performance. 
+
 
 ## TODOs:
 1. visualizations:
     - topic clusters with size of points based on karma
 2. modelling
-
     - topic modelling using e.gg k-means clustering, LDA 
 3. testing
 4. deployment
 
 
 3. bugfixes 
-    - the main page I'm scraping from only contains 16 posts. Should get the data from a different page/using a different method.
+    - 
 4. features:
     - data modeling (OLAP, star/snowflake schema)
     - LLM for topic modelling
