@@ -17,22 +17,38 @@ def save_to_json(data: dict, filename: str):
     print(f"{os.path.abspath(filename)}")
 
 
-def scrape_lw(num=10):
+def scrape_lw(num_posts=10):
+    
     base_url = "https://www.lesswrong.com"
-    #recent_posts_url = f"{base_url}/allPosts"
-    #recent_posts_url = f"{base_url}/allPosts?after=2025-02-19&before=2025-02-20&limit=100"
+    collection_date_start = datetime.datetime.strftime(datetime.datetime.now().date(), "%Y-%m-%d")
+    collection_date_end = datetime.datetime.strftime(datetime.datetime.now() - datetime.timedelta(days=90), "%Y-%m-%d")
+
+    url_timeblock = f"{base_url}/allPosts?after={collection_date_end}&before={collection_date_start}&limit={num_posts}"
+    print(url_timeblock)
+
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'}
-    page = requests.get(base_url, headers=headers)
+    page = requests.get(url_timeblock, headers=headers)
     # .content contains the raw bytes, while .text contains decoded text in human-readable format
     soup = BeautifulSoup(page.content, "html.parser")
+    print(soup.prettify())
+    all_classes = set()
+    for div in soup.find_all('div'):
+        classes = div.get('class', [])
+        all_classes.update(classes)
+    print("Available classes:", sorted(all_classes))
 
+    posts = []
+    parent_section = soup.find("div", class_="SingleColumnSection-root")
+    print(parent_section)
 
-    post_items = soup.find_all("div", class_="LWPostsItem-row")
+    post_items = posts.find_all("div", class_="LWPostsItem-row")
+
+   
     posts_data = {"timestamp": datetime.datetime.now().strftime("%Y%m%d_%H%M%S"),
                   "posts": []}
 
 
-    for i, post_item in enumerate(post_items[:num]):
+    for i, post_item in enumerate(post_items[:num_posts]):
         # Extract post URL
         post_span = post_item.find("span", class_="PostsTitle-eaTitleDesktopEllipsis")
         post_link = post_span.find("a")
@@ -40,7 +56,7 @@ def scrape_lw(num=10):
             continue
         
         post_url = f"{base_url}{post_link['href']}"
-        print(f"Scraping post {i+1}/{num}: {post_url}")
+        print(f"Scraping post {i+1}/{num_posts}: {post_url}")
         
         # Get individual post content
         post_page = requests.get(post_url, headers=headers)
@@ -86,4 +102,4 @@ def scrape_lw(num=10):
     save_to_json(posts_data, filename="raw_data.json")
 
 if __name__ == "__main__":
-    scrape_lw(num=2)
+    scrape_lw(num_posts=20)
