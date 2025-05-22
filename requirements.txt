@@ -1,4 +1,6 @@
 beautifulsoup4
+selenium
+webdriver-manager
 requests
 pandas
 apache-airflow
