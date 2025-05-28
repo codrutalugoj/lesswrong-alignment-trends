@@ -4,6 +4,7 @@ webdriver-manager
 requests
 pandas
 bertopic
+sentence-transformers
 apache-airflow
 boto3
 dbt-core

@@ -2,10 +2,9 @@ from bs4 import BeautifulSoup
 import requests
 import time
 import datetime
-import pandas as pd
 import json
 import os
-import shutil
+from tqdm import tqdm
 
 from selenium.webdriver import FirefoxService, Firefox
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
@@ -85,7 +84,7 @@ def scrape_lw(num_posts=10):
                   "posts": []}
 
 
-    for i, post_item in enumerate(post_items[:num_posts]):
+    for i, post_item in enumerate(tqdm(post_items[:num_posts])):
         # Extract post URL
         post_span = post_item.find("span", class_="PostsTitle-eaTitleDesktopEllipsis")
         post_link = post_span.find("a")
@@ -93,7 +92,7 @@ def scrape_lw(num_posts=10):
             continue
         
         post_url = f"{base_url}{post_link['href']}"
-        print(f"Scraping post {i+1}/{num_posts}: {post_url}")
+        #print(f"Scraping post {i+1}/{num_posts}: {post_url}")
         
         # Get individual post content
         post_page = requests.get(post_url, headers=headers)
@@ -102,13 +101,13 @@ def scrape_lw(num_posts=10):
         # Extract post title
         title_raw = post_soup.find("h1", class_="PostsPageTitle-root")
         title = title_raw.find("a").text if title_raw else "None"
-        print(f"    Post title: {title}")
+        #print(f"    Post title: {title}")
 
         # Extract tags
         tags_root = post_soup.find("span", class_="FooterTagList-root")
         tags_list = tags_root.find_all("span", class_="FooterTag-name")
         tags = [tag.text for tag in tags_list]
-        print(f"    Tags: {tags}")
+        #print(f"    Tags: {tags}")
 
         # Extract author names
         authors = post_soup.find("span", class_="PostsAuthors-authorName")
@@ -144,4 +143,4 @@ def scrape_lw(num_posts=10):
     save_to_json(posts_data, filename="raw_data.json")
 
 if __name__ == "__main__":
-    scrape_lw(num_posts=2)
+    scrape_lw(num_posts=200)
