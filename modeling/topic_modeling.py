@@ -36,15 +36,14 @@ topic_model.visualize_topics()
 
 # Get more detailed topic info
 topic_info = topic_model.get_topic_info()
-for col in topic_info.values():
-    print(col)
-#print(topic_info.head(1))
+#print(topic_info)
 
-# Get representative docs per topic
+# Get all words in top topics
 for topic_id in topic_info.Topic[:5]:
-    docs = topic_model.get_representative_docs(topic_id)
+    t = topic_model.get_topic_info(topic_id)
     print(f"\nTopic {topic_id}:")
-    print(docs[:2])  # First 2 representative documents
+    print(t)
+
 
 # #topics, prob = topic_model.transform(corpus)
 
