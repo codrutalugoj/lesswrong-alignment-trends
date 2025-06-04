@@ -6,6 +6,7 @@ The pipeline is orchestrated by Airflow DAGs.
 
 ### Extract
 1. Scraping latest LessWrong posts using requests & Beautiful Soup to get the raw html information
+Here I'm using Selenium for scraping dynamic content from LessWrong.
 2. Extract information from the HTML like title, author name, post tags and karma.  
 
 ### Load
@@ -18,8 +19,12 @@ We do some processing on the tags using a dbt layer:
 - eliminate the posts with the "meta" tag (those are meta posts on LessWrong we're not interested in).
 
 ## Modeling
-MVP: Topic Clustering using BERTopic
-There are pretrained models that I should test first and then finetune on LW data depending on performance. 
+Topic Modeling using BERTopic
+- naive approach using pretrained sentence transformers 
+    - further finetune the topics found
+- semi-supervised topic modeling - using the existing tags to inform the clusters 
+- dynamic topic modeling to model changes in topics over time 
+
 
 
 ## TODOs:
