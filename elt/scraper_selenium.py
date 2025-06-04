@@ -89,7 +89,7 @@ def scrape_lw(num_posts=10):
 
         post_items = soup.find_all("div", class_="LWPostsItem-row")
 
-        for post_item in tqdm(post_items[:num_posts]):
+        for post_item in tqdm(post_items):
             # Extract post URL
             post_span = post_item.find("span", class_="PostsTitle-eaTitleDesktopEllipsis")
             post_link = post_span.find("a")
@@ -150,7 +150,7 @@ def scrape_lw(num_posts=10):
         offset += page_size
         print(f"Scraped {total_scraped} posts so far...")
         time.sleep(10)
-        
+
     save_to_json(posts_data, filename="lesswrong_data.json")
 
 if __name__ == "__main__":
