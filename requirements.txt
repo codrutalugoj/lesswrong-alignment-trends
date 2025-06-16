@@ -5,6 +5,8 @@ requests
 pandas
 bertopic
 sentence-transformers
+fastapi
+uvicorn
 apache-airflow
 boto3
 dbt-core
